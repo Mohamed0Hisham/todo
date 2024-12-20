@@ -11,7 +11,7 @@ export const getAllUsers = async (req, res) => {
 		console.log(error);
 		return res.status(500).json({
 			message: "Error fetching users",
-			error: error,
+			error: error.message,
 		});
 	}
 };
@@ -30,7 +30,7 @@ export const getSingleUser = async (req, res) => {
 		console.log(error);
 		return res.status(500).json({
 			message: "Error fetching user",
-			error: error,
+			error: error.message,
 		});
 	}
 };
@@ -56,6 +56,9 @@ export const createUser = async (req, res) => {
 			parallelism: 2, // Use 2 threads
 		});
 		user.password = hashedPassword;
+		//adding timestamps
+		user.createdAt = new Date();
+		user.updatedAt = new Date();
 		const result = await userRepo.createUser(user);
 		//if something went wrong while inserting a user
 		if (result.acknowledged) {
@@ -73,7 +76,7 @@ export const createUser = async (req, res) => {
 		console.log(error);
 		return res.status(500).json({
 			message: "Error creating a user",
-			error: error,
+			error: error.message,
 		});
 	}
 };
@@ -88,7 +91,10 @@ export const updateUser = async (req, res) => {
 		});
 	}
 	try {
+		//update timestamp first
+		update.updatedAt = new Date()
 		const result = await userRepo.updateUser(id, update);
+		console.log(result)
 		if (result.acknowledged && result.modifiedCount === 1) {
 			return res.status(202).json({
 				success: true,
@@ -97,14 +103,14 @@ export const updateUser = async (req, res) => {
 			});
 		} else {
 			return res.status(500).json({
-				message: "enternal server error",
+				message: "please check the user id",
 			});
 		}
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({
 			message: "Error updating a user",
-			error: error,
+			error: error.message,
 		});
 	}
 };

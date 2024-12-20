@@ -28,7 +28,6 @@ export class UsersRepo {
 		return collection.updateOne(
 			{ _id: objectId },
 			{ $set: update },
-			{ upsert: true }
 		);
 	}
 	async deleteUser(id) {
