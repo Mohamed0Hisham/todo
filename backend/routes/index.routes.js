@@ -1,8 +1,10 @@
 import express from "express";
 import {
 	createUser,
+	deleteUser,
 	getAllUsers,
 	getSingleUser,
+	updateUser,
 } from "../controllers/user.controller.js";
 import {
 	createTodo,
@@ -18,6 +20,8 @@ const router = express.Router();
 router.get("/users", getAllUsers);
 router.get("/user/:id", getSingleUser);
 router.post("/user", createUser);
+router.put("/user/:id", updateUser);
+router.delete("/user/:id", deleteUser);
 
 // todo route
 router.get("/todos", getAllTodos);
