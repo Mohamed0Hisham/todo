@@ -5,7 +5,10 @@ dotenv.config();
 
 const uri = process.env.DB_URL;
 const dbName = process.env.DB_NAME;
-const client = new MongoClient(uri);
+const client = new MongoClient(uri, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
 let db;
 
 export const connectToDB = async function dbConnection() {
@@ -21,3 +24,15 @@ export const connectToDB = async function dbConnection() {
 	}
 	return db;
 };
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+	try {
+		await client.close();
+		console.log("✅ MongoDB connection closed gracefully");
+		process.exit(0);
+	} catch (error) {
+		console.error("❌ Error closing MongoDB connection:", error);
+		process.exit(1);
+	}
+});
